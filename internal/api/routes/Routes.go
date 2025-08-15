@@ -16,10 +16,11 @@ func SetupRoutes(r *gin.Engine, authHandler *handlers.AuthHandler, userHandler *
 		protected := api.Group("/")
 		protected.Use(middlewares.JWTAuth(jwtMgr))
 		{
-			protected.GET("/user", userHandler.GetAll)
-			protected.GET("/user/:id", userHandler.GetById)
-			protected.PUT("/user/:id", userHandler.UpdateUser)
-			protected.DELETE("/user/:id", userHandler.DeleteUser)
+			user := protected.Group("/user")
+			user.GET("/", userHandler.GetAll)
+			user.GET("/:id", userHandler.GetById)
+			user.PUT("/:id", userHandler.UpdateUser)
+			user.DELETE("/:id", userHandler.DeleteUser)
 		}
 	}
 }

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"Rent-And-Buy-App/internal/dtos"
+	"Rent-And-Buy-App/internal/dtos/userDtos"
 	"Rent-And-Buy-App/internal/entity"
 	"Rent-And-Buy-App/internal/service"
 	"Rent-And-Buy-App/pkg/Response"
@@ -18,7 +18,7 @@ func NewAuthHandler(service service.AuthService) *AuthHandler {
 }
 
 func (ah *AuthHandler) Register(c *gin.Context) {
-	var userDto dtos.CreateUserDto
+	var userDto userDtos.CreateUserDto
 	if err := c.ShouldBindJSON(&userDto); err != nil {
 		Response.JSON(c, http.StatusUnauthorized, "Validation failed", gin.H{"error": err.Error()})
 		return
@@ -42,7 +42,7 @@ func (ah *AuthHandler) Register(c *gin.Context) {
 
 func (ah *AuthHandler) Login(c *gin.Context) {
 
-	var userDto dtos.UserLoginDto
+	var userDto userDtos.UserLoginDto
 	if err := c.ShouldBindJSON(&userDto); err != nil {
 		Response.Error(c, gin.H{"error": err.Error()})
 	}

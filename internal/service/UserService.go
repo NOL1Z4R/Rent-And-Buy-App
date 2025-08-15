@@ -1,11 +1,11 @@
 package service
 
 import (
-	"Rent-And-Buy-App/internal/dtos"
+	"Rent-And-Buy-App/internal/dtos/userDtos"
 	"Rent-And-Buy-App/internal/entity"
 	"Rent-And-Buy-App/internal/repository"
+	"Rent-And-Buy-App/pkg/Converter"
 	"errors"
-	"strconv"
 )
 
 type UserService struct {
@@ -22,9 +22,8 @@ func (us *UserService) GetAll() ([]entity.User, error) {
 }
 
 func (us *UserService) GetByID(id string) (*entity.User, error) {
-	//var user *entity.User
-	ID, err := strconv.ParseUint(id, 10, 32)
-	user, err := us.repo.GetById(uint(ID))
+	Id := Converter.StringToUint(id)
+	user, err := us.repo.GetById(Id)
 	if err != nil || user == nil {
 		errors.New("User not found")
 	}
@@ -32,7 +31,7 @@ func (us *UserService) GetByID(id string) (*entity.User, error) {
 	return user, err
 }
 
-func (us *UserService) UpdateUser(user *entity.User, updateDto dtos.UpdateUserDto) (*entity.User, error) {
+func (us *UserService) UpdateUser(user *entity.User, updateDto userDtos.UpdateUserDto) (*entity.User, error) {
 	id := user.ID
 	isExist, err := us.repo.GetById(id)
 	if err != nil || isExist == nil {
@@ -52,8 +51,8 @@ func (us *UserService) UpdateUser(user *entity.User, updateDto dtos.UpdateUserDt
 	return user, nil
 }
 
-func (us *UserService) DeleteUser(Id string) error {
-	user, err := us.GetByID(Id)
+func (us *UserService) DeleteUser(id string) error {
+	user, err := us.GetByID(id)
 	if err != nil {
 		return errors.New("could not convert into uint")
 	}

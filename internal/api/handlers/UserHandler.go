@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"Rent-And-Buy-App/internal/dtos"
+	"Rent-And-Buy-App/internal/dtos/userDtos"
 	"Rent-And-Buy-App/internal/entity"
 	"Rent-And-Buy-App/internal/service"
 	"Rent-And-Buy-App/pkg/Response"
@@ -41,7 +41,7 @@ func (uh *UserHandler) GetById(c *gin.Context) {
 }
 
 func (uh *UserHandler) UpdateUser(c *gin.Context) {
-	var updateDto dtos.UpdateUserDto
+	var updateDto userDtos.UpdateUserDto
 	if err := c.ShouldBindJSON(&updateDto); err != nil {
 		Response.Error(c, gin.H{"error": err.Error()})
 	}
