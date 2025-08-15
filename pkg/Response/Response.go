@@ -12,10 +12,10 @@ func JSON(c *gin.Context, status int, message string, data interface{}) {
 	})
 }
 
-func Success(c *gin.Context, data interface{}) {
+func OK(c *gin.Context, data interface{}) {
 	JSON(c, http.StatusOK, "success", data)
 }
 
 func Error(c *gin.Context, data interface{}) {
-	JSON(c, http.StatusOK, "error", data)
+	JSON(c, http.StatusBadRequest, "An error occured during process", data)
 }

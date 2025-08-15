@@ -11,7 +11,7 @@ type JWTManager struct {
 	expireTime int
 }
 
-func NewJWTManager(secret string, expireTime int) *JWTManager {
+func NewJwtManager(secret string, expireTime int) *JWTManager {
 	return &JWTManager{secret, expireTime}
 }
 

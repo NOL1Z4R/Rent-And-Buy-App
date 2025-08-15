@@ -7,6 +7,6 @@ type User struct {
 	Name     string `json:"Name" binding:"required"`
 	Surname  string `json:"Surname" binding:"required"`
 	Email    string `json:"Email" binding:"required,email"`
-	Password string `json:"-" binding:"required,min=8"`
-	IsSeller bool   `json:"IsSeller" binding:"required"`
+	Password string `json:"-" binding:"required,min=6"`
+	IsSeller *bool  `json:"IsSeller" binding:"required"`
 }
