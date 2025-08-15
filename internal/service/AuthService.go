@@ -18,12 +18,12 @@ type authService interface {
 	Login(email string, password string) (string, error)
 }
 
-func NewAuthService(repo repository.UserRepository) *AuthService {
-	return &AuthService{repo: repo}
+func NewAuthService(repo repository.UserRepository, jwtManager *auth.JWTManager) *AuthService {
+	return &AuthService{repo: repo, jwtManager: jwtManager}
 }
 
 func (as *AuthService) Register(user *entity.User) error {
-	if exists, _ := as.repo.GetByEmail(user.Email); exists != nil {
+	if exists, _ := as.repo.GetByEmail(user.Email); exists == nil {
 		return errors.New("User with this email already exists")
 	}
 
@@ -33,7 +33,7 @@ func (as *AuthService) Register(user *entity.User) error {
 	}
 	user.Password = hashed
 
-	err = as.repo.Create(*user)
+	err = as.repo.Create(user)
 	return err
 }
 
@@ -43,7 +43,7 @@ func (as *AuthService) Login(email string, password string) (string, error) {
 		return "", errors.New("This user does not exist")
 	}
 
-	isCorrect := hash.VerifyPassword(password, user.Password)
+	isCorrect := hash.VerifyPassword(user.Password, password)
 	if !isCorrect {
 		return "", errors.New("Invalid password")
 	}

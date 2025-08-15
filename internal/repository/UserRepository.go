@@ -41,10 +41,14 @@ func (ur *UserRepository) GetById(id uint) (*entity.User, error) {
 	return &user, result.Error
 }
 
-func (ur *UserRepository) Create(user entity.User) error {
+func (ur *UserRepository) Create(user *entity.User) error {
 	return ur.db.Create(&user).Error
 }
 
-func (ur *UserRepository) Update(user entity.User) error {
+func (ur *UserRepository) Update(user *entity.User) error {
 	return ur.db.Save(&user).Error
+}
+
+func (ur *UserRepository) Delete(user *entity.User) error {
+	return ur.db.Delete(&user).Error
 }
