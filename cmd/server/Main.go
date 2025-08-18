@@ -18,22 +18,25 @@ func main() {
 	dsn := config.GetDsn(cfg)
 	db, _ := config.ConnectToDB(dsn)
 
-	err := db.AutoMigrate(&entity.User{})
+	err := db.AutoMigrate(&entity.User{}, &entity.Car{}, &entity.House{})
 	if err != nil {
 		log.Fatalf("Error migrating users: %v", err)
 	}
 
 	//TODO burdaki *lara bir bak
 	userRepo := repository.NewUserRepository(db)
+	carRepo := repository.NewCarRepository(db)
 	jwtManager := auth.NewJwtManager(cfg.JwtSecret, cfg.JwtExpireHours)
 	authSrv := service.NewAuthService(*userRepo, jwtManager)
 	userSrv := service.NewUserService(*userRepo)
+	carSrv := service.NewCarService(*carRepo)
 
 	authHandler := handlers.NewAuthHandler(*authSrv)
 	userHandler := handlers.NewUserHandler(*userSrv)
+	carHandler := handlers.NewCarHandler(carSrv)
 
 	route := gin.Default()
-	routes.SetupRoutes(route, authHandler, userHandler, jwtManager)
+	routes.SetupRoutes(route, authHandler, carHandler, userHandler, jwtManager)
 
 	route.Run()
 }
