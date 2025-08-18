@@ -23,20 +23,22 @@ func main() {
 		log.Fatalf("Error migrating users: %v", err)
 	}
 
-	//TODO burdaki *lara bir bak
 	userRepo := repository.NewUserRepository(db)
 	carRepo := repository.NewCarRepository(db)
+	houseRepo := repository.NewHouseRepository(db)
 	jwtManager := auth.NewJwtManager(cfg.JwtSecret, cfg.JwtExpireHours)
 	authSrv := service.NewAuthService(*userRepo, jwtManager)
 	userSrv := service.NewUserService(*userRepo)
 	carSrv := service.NewCarService(*carRepo)
+	houseSrv := service.NewHouseService(*houseRepo)
 
 	authHandler := handlers.NewAuthHandler(*authSrv)
 	userHandler := handlers.NewUserHandler(*userSrv)
 	carHandler := handlers.NewCarHandler(carSrv)
+	houseHandler := handlers.NewHouseHandler(*houseSrv)
 
 	route := gin.Default()
-	routes.SetupRoutes(route, authHandler, carHandler, userHandler, jwtManager)
+	routes.SetupRoutes(route, authHandler, carHandler, houseHandler, userHandler, jwtManager)
 
 	route.Run()
 }
