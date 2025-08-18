@@ -7,7 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRoutes(r *gin.Engine, authHandler *handlers.AuthHandler, userHandler *handlers.UserHandler, jwtMgr *auth.JWTManager) {
+func SetupRoutes(r *gin.Engine,
+	authHandler *handlers.AuthHandler,
+	carHandler *handlers.CarHandler,
+	userHandler *handlers.UserHandler,
+	jwtMgr *auth.JWTManager) {
 	api := r.Group("/api")
 	{
 		api.POST("/register", authHandler.Register)
@@ -17,10 +21,21 @@ func SetupRoutes(r *gin.Engine, authHandler *handlers.AuthHandler, userHandler *
 		protected.Use(middlewares.JWTAuth(jwtMgr))
 		{
 			user := protected.Group("/user")
-			user.GET("/", userHandler.GetAll)
-			user.GET("/:id", userHandler.GetById)
-			user.PUT("/:id", userHandler.UpdateUser)
-			user.DELETE("/:id", userHandler.DeleteUser)
+			{
+				user.GET("/", userHandler.GetAll)
+				user.GET("/:id", userHandler.GetById)
+				user.PUT("/:id", userHandler.UpdateUser)
+				user.DELETE("/:id", userHandler.DeleteUser)
+			}
+			car := protected.Group("/car")
+			{
+				car.GET("/", carHandler.GetCarAll)
+				car.GET("/:id", carHandler.GetCarById)
+				car.GET("/plate/:plate", carHandler.GetCarByPlate)
+				car.POST("/", carHandler.CreateCar)
+				car.PUT("/:id", carHandler.UpdateCar)
+				car.DELETE("/:id", carHandler.DeleteCar)
+			}
 		}
 	}
 }

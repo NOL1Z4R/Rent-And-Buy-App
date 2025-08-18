@@ -1,6 +1,6 @@
 package carDtos
 
-type CreateCarDto struct {
+type UpdateCarDto struct {
 	Brand    string `json:"Brand" binding:"required"`
 	CarModel string `json:"CarModel" binding:"required"`
 	Year     uint   `json:"Year" binding:"required"`
