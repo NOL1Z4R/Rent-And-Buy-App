@@ -10,6 +10,7 @@ import (
 func SetupRoutes(r *gin.Engine,
 	authHandler *handlers.AuthHandler,
 	carHandler *handlers.CarHandler,
+	houseHandler *handlers.HouseHandler,
 	userHandler *handlers.UserHandler,
 	jwtMgr *auth.JWTManager) {
 	api := r.Group("/api")
@@ -35,6 +36,14 @@ func SetupRoutes(r *gin.Engine,
 				car.POST("/", carHandler.CreateCar)
 				car.PUT("/:id", carHandler.UpdateCar)
 				car.DELETE("/:id", carHandler.DeleteCar)
+			}
+			house := protected.Group("/house")
+			{
+				house.GET("/", houseHandler.GetHouseAll)
+				house.GET("/:id", houseHandler.GetHouse)
+				house.POST("/", houseHandler.CreateHouse)
+				house.PUT("/:id", houseHandler.UpdateHouse)
+				house.DELETE("/:id", houseHandler.DeleteHouse)
 			}
 		}
 	}
