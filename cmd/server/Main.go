@@ -9,16 +9,22 @@ import (
 	"Rent-And-Buy-App/internal/service"
 	"Rent-And-Buy-App/pkg/auth"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"log"
 )
 
 func main() {
+	var db *gorm.DB
+	var err error
 	//to configure later
 	cfg := config.LoadConfig()
 	dsn := config.GetDsn(cfg)
-	db, _ := config.ConnectToDB(dsn)
+	db, err = config.ConnectToDB(dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	err := db.AutoMigrate(&entity.User{}, &entity.Car{}, &entity.House{})
+	err = db.AutoMigrate(&entity.User{}, &entity.Car{}, &entity.House{}, &entity.Post{}, &entity.Product{})
 	if err != nil {
 		log.Fatalf("Error migrating users: %v", err)
 	}
@@ -26,19 +32,26 @@ func main() {
 	userRepo := repository.NewUserRepository(db)
 	carRepo := repository.NewCarRepository(db)
 	houseRepo := repository.NewHouseRepository(db)
+	postRepo := repository.NewPostRepository(db)
+	productRepo := repository.NewProductRepository(db)
 	jwtManager := auth.NewJwtManager(cfg.JwtSecret, cfg.JwtExpireHours)
+
 	authSrv := service.NewAuthService(*userRepo, jwtManager)
 	userSrv := service.NewUserService(*userRepo)
-	carSrv := service.NewCarService(*carRepo)
-	houseSrv := service.NewHouseService(*houseRepo)
+	carSrv := service.NewCarService(carRepo)
+	houseSrv := service.NewHouseService(houseRepo)
+	productSrv := service.NewProductService(productRepo, carSrv, houseSrv)
+	postSrv := service.NewPostService(postRepo, productSrv, userSrv)
 
 	authHandler := handlers.NewAuthHandler(*authSrv)
 	userHandler := handlers.NewUserHandler(*userSrv)
 	carHandler := handlers.NewCarHandler(carSrv)
-	houseHandler := handlers.NewHouseHandler(*houseSrv)
+	houseHandler := handlers.NewHouseHandler(houseSrv)
+	postHandler := handlers.NewPostHandler(*postSrv)
 
 	route := gin.Default()
-	routes.SetupRoutes(route, authHandler, carHandler, houseHandler, userHandler, jwtManager)
+	routes.SetupRoutes(route, authHandler, carHandler, houseHandler, postHandler, userHandler, jwtManager)
 
+	route.Use(gin.Recovery())
 	route.Run()
 }

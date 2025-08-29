@@ -61,12 +61,12 @@ func (ch *CarHandler) CreateCar(c *gin.Context) {
 		Plate:    carDto.Plate,
 	}
 
-	car, err := ch.service.CreateCar(&car)
+	newCar, err := ch.service.CreateCar(&car)
 	if err != nil {
 		Response.Error(c, gin.H{"error": err.Error()})
 		return
 	}
-	Response.OK(c, gin.H{"car": car})
+	Response.OK(c, gin.H{"car": newCar})
 }
 
 func (ch *CarHandler) UpdateCar(c *gin.Context) {

@@ -9,10 +9,10 @@ import (
 )
 
 type HouseHandler struct {
-	service service.HouseService
+	service *service.HouseService
 }
 
-func NewHouseHandler(service service.HouseService) *HouseHandler {
+func NewHouseHandler(service *service.HouseService) *HouseHandler {
 	return &HouseHandler{service: service}
 }
 
@@ -80,12 +80,7 @@ func (hh *HouseHandler) UpdateHouse(c *gin.Context) {
 
 func (hh *HouseHandler) DeleteHouse(c *gin.Context) {
 	id := c.Param("id")
-	house, err := hh.service.GetById(id)
-	if err != nil {
-		Response.Error(c, gin.H{"error": err.Error()})
-		return
-	}
-	err = hh.service.Delete(house)
+	err := hh.service.Delete(id)
 	if err != nil {
 		Response.Error(c, gin.H{"error": err.Error()})
 		return

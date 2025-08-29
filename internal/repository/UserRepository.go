@@ -9,14 +9,14 @@ type UserRepository struct {
 	db *gorm.DB
 }
 
-type userRepository interface {
-	GetAll() ([]entity.User, error)
-	Create(user entity.User) error
-	GetByEmail(email string) (*entity.User, error)
-	GetById(id uint) (*entity.User, error)
-	Update(user entity.User) error
-	Delete(user entity.User) error
-}
+//type userRepository interface {
+//	GetAll() ([]entity.User, error)
+//	Create(user entity.User) error
+//	GetByEmail(email string) (*entity.User, error)
+//	GetById(id uint) (*entity.User, error)
+//	Update(user entity.User) error
+//	Delete(user entity.User) error
+//}
 
 func NewUserRepository(db *gorm.DB) *UserRepository {
 	return &UserRepository{db: db}

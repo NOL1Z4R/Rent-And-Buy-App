@@ -9,10 +9,10 @@ import (
 )
 
 type CarService struct {
-	repo repository.CarRepository
+	repo *repository.CarRepository
 }
 
-func NewCarService(repo repository.CarRepository) *CarService {
+func NewCarService(repo *repository.CarRepository) *CarService {
 	return &CarService{repo: repo}
 }
 
@@ -44,20 +44,20 @@ func (cs *CarService) GetByPlate(plate string) (*entity.Car, error) {
 	return car, nil
 }
 
-func (cs *CarService) CreateCar(car *entity.Car) (entity.Car, error) {
+func (cs *CarService) CreateCar(car *entity.Car) (*entity.Car, error) {
 	plate := car.Plate
-	if isExist, err := cs.repo.GetByPlate(plate); err != nil || isExist != nil {
-		errors.New("This car already exists")
+	if isExist, err := cs.repo.GetByPlate(plate); (err != nil) || (isExist.Plate != "") {
+		return nil, errors.New("This car already exists")
 	}
 
 	err := cs.repo.Create(car)
-	return *car, err
+	return car, err
 }
 
 func (cs *CarService) UpdateCar(car *entity.Car, updateDto *carDtos.UpdateCarDto) (*entity.Car, error) {
 	plate := updateDto.Plate
-	if isExist, err := cs.repo.GetByPlate(plate); err != nil || isExist != nil {
-		errors.New("This car already exists")
+	if isExist, err := cs.repo.GetByPlate(plate); err != nil || isExist.Plate != "" {
+		return nil, errors.New("This car already exists")
 	}
 
 	car.Brand = updateDto.Brand
@@ -80,4 +80,22 @@ func (cs *CarService) DeleteCar(id string) error {
 		return err
 	}
 	return nil
+}
+
+func (cs *CarService) GetCarDto(id string) (*carDtos.CarDto, error) {
+	car, err := cs.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	carDto := &carDtos.CarDto{
+		ID:       car.ID,
+		Brand:    car.Brand,
+		CarModel: car.CarModel,
+		Year:     car.Year,
+		Milage:   car.Milage,
+		Plate:    car.Plate,
+	}
+
+	return carDto, nil
 }
