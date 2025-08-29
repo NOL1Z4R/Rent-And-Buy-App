@@ -13,28 +13,27 @@ func NewHouseRepository(db *gorm.DB) *HouseRepository {
 	return &HouseRepository{db: db}
 }
 
-func (hb *HouseRepository) GetAll() ([]*entity.House, error) {
+func (hr *HouseRepository) GetAll() ([]*entity.House, error) {
 	var houses []*entity.House
-	result := hb.db.Find(&houses)
+	result := hr.db.Find(&houses)
 	return houses, result.Error
 }
 
-func (hb *HouseRepository) GetById(id uint) (*entity.House, error) {
+func (hr *HouseRepository) GetById(id uint) (*entity.House, error) {
 	var house *entity.House
-	result := hb.db.Where("id = ?", id).Find(&house)
+	result := hr.db.Where("id = ?", id).Find(&house)
 	return house, result.Error
 }
 
-func (hb *HouseRepository) Create(house *entity.House) error {
-	result := hb.db.Create(house)
-	return result.Error
+func (hr *HouseRepository) Create(house *entity.House) error {
+	return hr.db.Create(&house).Error
 }
-func (hb *HouseRepository) Update(house *entity.House) error {
-	result := hb.db.Save(house)
+func (hr *HouseRepository) Update(house *entity.House) error {
+	result := hr.db.Save(house)
 	return result.Error
 }
 
-func (hb *HouseRepository) Delete(house *entity.House) error {
-	result := hb.db.Delete(&house)
+func (hr *HouseRepository) Delete(house *entity.House) error {
+	result := hr.db.Delete(&house)
 	return result.Error
 }

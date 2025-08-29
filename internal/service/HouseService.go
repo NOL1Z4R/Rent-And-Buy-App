@@ -9,10 +9,10 @@ import (
 )
 
 type HouseService struct {
-	repo repository.HouseRepository
+	repo *repository.HouseRepository
 }
 
-func NewHouseService(repo repository.HouseRepository) *HouseService {
+func NewHouseService(repo *repository.HouseRepository) *HouseService {
 	return &HouseService{repo: repo}
 }
 
@@ -36,6 +36,9 @@ func (hs *HouseService) GetById(id string) (*entity.House, error) {
 
 // TODO adress control can be added in future
 func (hs *HouseService) Create(house *entity.House) (*entity.House, error) {
+	if house == nil {
+		return nil, errors.New("house is nil")
+	}
 	err := hs.repo.Create(house)
 	if err != nil {
 		return nil, err
@@ -61,24 +64,31 @@ func (hs *HouseService) Update(house *entity.House, updateDto *houseDtos.UpdateH
 
 	return house, nil
 }
+func (hs *HouseService) Delete(id string) error {
+	house, err := hs.GetById(id)
+	if err != nil {
+		return err
+	}
 
-//func (hs *HouseService) Delete(id uint) error {
-//	house, err := hs.repo.GetById(id)
-//	if err != nil || house == nil {
-//		return errors.New("This house is not exists")
-//	}
-//
-//	err = hs.repo.Delete(house)
-//	if err != nil {
-//		return errors.New("could not deleted this house")
-//	}
-//	return nil
-//}
-
-func (hs *HouseService) Delete(house *entity.House) error {
-	err := hs.repo.Delete(house)
+	err = hs.repo.Delete(house)
 	if err != nil {
 		return errors.New("could not deleted this house")
 	}
 	return nil
+}
+
+func (hs *HouseService) GetHouseDto(id string) (*houseDtos.HouseDto, error) {
+	house, err := hs.GetById(id)
+	if err != nil {
+		return nil, err
+	}
+
+	houseDto := &houseDtos.HouseDto{
+		ID:          house.ID,
+		Adress:      house.Adress,
+		SquareMeter: house.SquareMeter,
+		Year:        house.Year,
+	}
+
+	return houseDto, nil
 }
