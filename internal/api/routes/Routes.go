@@ -12,6 +12,7 @@ func SetupRoutes(r *gin.Engine,
 	carHandler *handlers.CarHandler,
 	houseHandler *handlers.HouseHandler,
 	postHandler *handlers.PostHandler,
+	saleHandler *handlers.SaleHandler,
 	userHandler *handlers.UserHandler,
 	jwtMgr *auth.JWTManager) {
 	api := r.Group("/api")
@@ -53,6 +54,14 @@ func SetupRoutes(r *gin.Engine,
 				post.POST("/", postHandler.CreatePost)
 				post.PUT("/:id", postHandler.UpdatePost)
 				post.DELETE("/:id", postHandler.DeletePost)
+			}
+			sale := protected.Group("/sale")
+			{
+				sale.GET("/", saleHandler.GetSaleAll)
+				sale.GET("/:id", saleHandler.GetSaleById)
+				sale.POST("/", saleHandler.CreateSale)
+				sale.PUT("/:id", saleHandler.ConfirmSale)
+				sale.DELETE("/:id", saleHandler.DeleteSale)
 			}
 		}
 	}

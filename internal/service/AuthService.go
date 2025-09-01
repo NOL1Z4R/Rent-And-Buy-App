@@ -9,7 +9,7 @@ import (
 )
 
 type AuthService struct {
-	repo       repository.UserRepository
+	repo       *repository.UserRepository
 	jwtManager *auth.JWTManager
 }
 
@@ -18,7 +18,7 @@ type authService interface {
 	Login(email string, password string) (string, error)
 }
 
-func NewAuthService(repo repository.UserRepository, jwtManager *auth.JWTManager) *AuthService {
+func NewAuthService(repo *repository.UserRepository, jwtManager *auth.JWTManager) *AuthService {
 	return &AuthService{repo: repo, jwtManager: jwtManager}
 }
 
