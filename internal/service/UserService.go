@@ -9,10 +9,10 @@ import (
 )
 
 type UserService struct {
-	repo repository.UserRepository
+	repo *repository.UserRepository
 }
 
-func NewUserService(repo repository.UserRepository) *UserService {
+func NewUserService(repo *repository.UserRepository) *UserService {
 	return &UserService{repo: repo}
 }
 
@@ -24,8 +24,11 @@ func (us *UserService) GetAll() ([]entity.User, error) {
 func (us *UserService) GetByID(id string) (*entity.User, error) {
 	Id := Converter.StringToUint(id)
 	user, err := us.repo.GetById(Id)
-	if err != nil || user == nil {
-		errors.New("User not found")
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, errors.New("User not found")
 	}
 
 	return user, err

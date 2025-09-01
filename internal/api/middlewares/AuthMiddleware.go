@@ -8,10 +8,6 @@ import (
 	"strings"
 )
 
-//type AuthMiddleware struct {
-//	jwtManager *auth.JWTManager
-//}
-
 func JWTAuth(jwtMgr *auth.JWTManager) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
